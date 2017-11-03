@@ -27,4 +27,15 @@ describe("ToDo - POST Tests", () => {
             done(err);
         });
     });
+
+    it("should get all the tasks from the database", (done) => {
+        superagent.get(BASE_URL + '/tasks')
+        .end((err, res) => {
+            expect(err).to.not.exist;
+            expect(res).to.exist;
+            expect(res.status).to.equal(200);
+            expect(res.body.tasks.length).to.be.greaterThan(0);
+            done();
+        });
+    });
 });
