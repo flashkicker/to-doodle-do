@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 var {mongoose} = require('./db/mongoose');
 var Task = require('./models/task');
 var User = require('./models/user');
+var authenticate = require('./middleware/authenticate');
 
 var app = express();
 
@@ -109,9 +110,9 @@ app.patch('/tasks/:id', (req, res) => {
 
 app.post('/users', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
-
+    
     var user = new User(body);
-
+    
     user.save().then(() => {
         return user.generateAuthToken();
     }).then((token) => {
@@ -120,5 +121,10 @@ app.post('/users', (req, res) => {
         res.status(400).send(err);
     });
 });
+
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user);
+});
+
 
 app.listen(3000);
