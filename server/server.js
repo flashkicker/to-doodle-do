@@ -11,9 +11,10 @@ var app = express();
 
 app.use(bodyParser.json());
 
-app.post('/tasks', (req, res) => {
+app.post('/tasks', authenticate, (req, res) => {
     var task = new Task({
-        text: req.body.text
+        text: req.body.text,
+        _creator: req.user._id
     });
     
     task.save().then((document) => {
@@ -23,8 +24,10 @@ app.post('/tasks', (req, res) => {
     })
 });
 
-app.get('/tasks', (req, res) => {
-    Task.find().then((tasks) => {
+app.get('/tasks', authenticate, (req, res) => {
+    Task.find({
+        _creator: req.user._id
+    }).then((tasks) => {
         res.send({
             tasks
         });
@@ -33,11 +36,14 @@ app.get('/tasks', (req, res) => {
     });
 });
 
-app.get('/tasks/:id', (req, res) => {
+app.get('/tasks/:id', authenticate, (req, res) => {
     var id = req.params.id;
     
     if(mongoose.Types.ObjectId.isValid(id)) {
-        Task.findById(id).then((task) => {
+        Task.findOne({
+            _id: id,
+            _creator: req.user._id
+        }).then((task) => {
             if(task != null) {
                 res.send({
                     task
@@ -55,11 +61,14 @@ app.get('/tasks/:id', (req, res) => {
     }
 })
 
-app.delete('/tasks/:id', (req, res) => {
+app.delete('/tasks/:id', authenticate, (req, res) => {
     var id = req.params.id;
     
     if(mongoose.Types.ObjectId.isValid(id)) {
-        Task.findByIdAndRemove(id).then((task) => {
+        Task.findOneAndRemove({
+            _id: id,
+            _creator: req.user._id
+        }).then((task) => {
             if(task != null) {
                 res.send({
                     task
@@ -77,7 +86,7 @@ app.delete('/tasks/:id', (req, res) => {
     }
 });
 
-app.patch('/tasks/:id', (req, res) => {
+app.patch('/tasks/:id', authenticate, (req, res) => {
     var id = req.params.id;
     var body = _.pick(req.body, ['text', 'completed']);
     if(mongoose.Types.ObjectId.isValid(id)) {
@@ -89,7 +98,10 @@ app.patch('/tasks/:id', (req, res) => {
             body.completedAt = null;
         }
         
-        Task.findByIdAndUpdate(id, {$set: body}, {new: true}).then((task) => {
+        Task.findOneAndUpdate({
+            _id: id,
+            _creator: req.user._id
+        }, {$set: body}, {new: true}).then((task) => {
             if(task != null) {
                 console.log(task);
                 res.send({

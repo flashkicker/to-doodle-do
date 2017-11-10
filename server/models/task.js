@@ -14,6 +14,10 @@ var Task = mongoose.model('Task', {
     completedAt: {
         type: Number,
         default: null
+    },
+    _creator: {
+        type: mongoose.Types.ObjectId,
+        required: true
     }
 });
 
