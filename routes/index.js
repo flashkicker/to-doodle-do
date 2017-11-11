@@ -8,8 +8,6 @@ var authenticate = require('../middleware/authenticate');
 
 /* GET home page. */
 router.get('/', authenticate, function(req, res, next) {
-  token = req.session.token;
-  console.log(req.session);
   res.render('index', {
     title: 'To-Doodle-Do',
     user: req.user
@@ -36,9 +34,10 @@ router.get('/tasks', authenticate, (req, res) => {
     Task.find({
         _creator: req.user._id
     }).then((tasks) => {
-        res.send({
-            tasks
-        });
+        res.render('index', {
+          user: req.user,
+          tasks: tasks
+        })
     }, (err) => {
         res.status(400).send(err);
     });

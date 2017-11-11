@@ -4,7 +4,7 @@ var authenticate = (req, res, next) => {
     var token = req.session.token;
     
     User.findByToken(token).then((user) => {
-        if(!user) {
+        if(!user || req.session === undefined) {
             return Promise.reject();
         }
         req.user = user;

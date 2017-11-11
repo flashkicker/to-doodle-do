@@ -7,7 +7,7 @@ html
 		link(href="https://fonts.googleapis.com/css?family=Roboto:400,700,500", rel="stylesheet", type="text/css")
 		link(rel="stylesheet", type="text/css", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css")
 		script(type="text/javascript", src="/javascripts/lib/jquery-3.2.1.min.js")
-		script(type="text/javascript", src="/javascripts/todos.js")
+
 	body
 
 		nav.navbar.bg-light
@@ -17,9 +17,8 @@ html
 			- if(user)
 				.navbar.float-right
 					container
-						ul.nav.nav-pills.float-right
-							li.nav-item
-								a#logout.btn.btn-primary(href="./users/login", role="button", name="logout") Log Out
+						nav.nav-pills.float-right
+							a#logout.btn.btn-primary(href="./users/login", role="button", name="logout") Log Out
 			- else
 				.navbar.float-right
 					container
@@ -28,6 +27,8 @@ html
 								a#register.btn.btn-primary(href="./register", role="button", name="register") Register				
 
 		<br>
+
+		block content
 
 		script.
 			$(document).ready(function(){
@@ -40,4 +41,4 @@ html
 				});
 			});
 
-		block content
+		
