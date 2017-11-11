@@ -56,12 +56,8 @@ router.get('/users/me', authenticate, (req, res) => {
 });
 
 // Logout a user (delete token)
-router.delete('/users/logout', authenticate, (req, res) => {
-  req.user.removeToken(req.token).then(() => {
-    res.status(200).send();
-  }, () => {
-    res.status(400).send();
-  })
+router.delete('/logout', authenticate, (req, res) => {
+  req.session.destroy();
 })
 
 module.exports = router;

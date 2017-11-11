@@ -14,12 +14,30 @@ html
 			.navbar.float-left
 				container
 					a.h4.nav-link(href="/") To-Doodle-Do
-			.navbar.float-right
-				container
-					ul.nav.nav-pills.float-right
-						li.nav-item
-							a.h5.nav-link(href="/signout") Sign Out
+			- if(user)
+				.navbar.float-right
+					container
+						ul.nav.nav-pills.float-right
+							li.nav-item
+								a#logout.btn.btn-primary(href="./users/login", role="button", name="logout") Log Out
+			- else
+				.navbar.float-right
+					container
+						ul.nav.nav-pills.float-right
+							li.nav-item
+								a#register.btn.btn-primary(href="./register", role="button", name="register") Register				
 
 		<br>
+
+		script.
+			$(document).ready(function(){
+				$('#logout').click(function(){
+					$.ajax({
+						url: './users/logout',
+						type: 'DELETE',
+						contentType:'application/json'
+					});
+				});
+			});
 
 		block content

@@ -9,8 +9,10 @@ var authenticate = require('../middleware/authenticate');
 /* GET home page. */
 router.get('/', authenticate, function(req, res, next) {
   token = req.session.token;
+  console.log(req.session);
   res.render('index', {
-    title: 'To-Doodle-Do'
+    title: 'To-Doodle-Do',
+    user: req.user
   });
 });
 
