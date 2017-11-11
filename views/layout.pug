@@ -1,0 +1,25 @@
+doctype html
+html
+	head
+		title Todo List
+		link(rel="stylesheet", type="text/css", href="/stylesheets/todos.css")
+		link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+		link(href="https://fonts.googleapis.com/css?family=Roboto:400,700,500", rel="stylesheet", type="text/css")
+		link(rel="stylesheet", type="text/css", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.css")
+		script(type="text/javascript", src="/javascripts/lib/jquery-3.2.1.min.js")
+		script(type="text/javascript", src="/javascripts/todos.js")
+	body
+
+		nav.navbar.bg-light
+			.navbar.float-left
+				container
+					a.h4.nav-link(href="/") To-Doodle-Do
+			.navbar.float-right
+				container
+					ul.nav.nav-pills.float-right
+						li.nav-item
+							a.h5.nav-link(href="/signout") Sign Out
+
+		<br>
+
+		block content

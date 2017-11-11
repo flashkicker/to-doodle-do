@@ -1,0 +1,22 @@
+extends layout
+
+block content
+
+    .container
+        .jumbotron
+            h2.b.align.center Register for #{title}!
+            hr.my-4
+            .container
+            .row
+                .col-sm 
+                    form(method="POST", action="./register")
+                        .form-group
+                            label(for="email") Email
+                            input#email.form-control(type="email", name="email", required, autofocus="true", placeholder="Enter Email")
+                        .form-group
+                            label(for="password") Password
+                            input#password.form-control(type="password", name="password", required, placeholder="Password")
+                            <hr>
+                            button.btn.btn-primary(type="submit") Register
+                .col-sm
+                .col-sm

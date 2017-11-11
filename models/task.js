@@ -16,7 +16,7 @@ var Task = mongoose.model('Task', {
         default: null
     },
     _creator: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     }
 });

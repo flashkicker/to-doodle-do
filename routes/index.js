@@ -1,17 +1,21 @@
+var express = require('express');
+var router = express.Router();
 const _ = require('lodash');
-const express = require('express');
-const bodyParser = require('body-parser');
 
-var {mongoose} = require('./db/mongoose');
-var Task = require('./models/task');
-var User = require('./models/user');
-var authenticate = require('./middleware/authenticate');
+var {mongoose} = require('../db/mongoose');
+var Task = require('../models/task');
+var authenticate = require('../middleware/authenticate');
 
-var app = express();
+/* GET home page. */
+router.get('/', authenticate, function(req, res, next) {
+  token = req.session.token;
+  res.render('index', {
+    title: 'To-Doodle-Do'
+  });
+});
 
-app.use(bodyParser.json());
-
-app.post('/tasks', authenticate, (req, res) => {
+// Add a new task
+router.post('/tasks', authenticate, (req, res) => {
     var task = new Task({
         text: req.body.text,
         _creator: req.user._id
@@ -24,7 +28,9 @@ app.post('/tasks', authenticate, (req, res) => {
     })
 });
 
-app.get('/tasks', authenticate, (req, res) => {
+
+// Get all tasks created by a user
+router.get('/tasks', authenticate, (req, res) => {
     Task.find({
         _creator: req.user._id
     }).then((tasks) => {
@@ -36,7 +42,8 @@ app.get('/tasks', authenticate, (req, res) => {
     });
 });
 
-app.get('/tasks/:id', authenticate, (req, res) => {
+// Get a task by passing it's id in the parameter
+router.get('/tasks/:id', authenticate, (req, res) => {
     var id = req.params.id;
     
     if(mongoose.Types.ObjectId.isValid(id)) {
@@ -61,7 +68,8 @@ app.get('/tasks/:id', authenticate, (req, res) => {
     }
 })
 
-app.delete('/tasks/:id', authenticate, (req, res) => {
+// Delete a task
+router.delete('/tasks/:id', authenticate, (req, res) => {
     var id = req.params.id;
     
     if(mongoose.Types.ObjectId.isValid(id)) {
@@ -86,7 +94,8 @@ app.delete('/tasks/:id', authenticate, (req, res) => {
     }
 });
 
-app.patch('/tasks/:id', authenticate, (req, res) => {
+// Update a task
+router.patch('/tasks/:id', authenticate, (req, res) => {
     var id = req.params.id;
     var body = _.pick(req.body, ['text', 'completed']);
     if(mongoose.Types.ObjectId.isValid(id)) {
@@ -120,42 +129,4 @@ app.patch('/tasks/:id', authenticate, (req, res) => {
     }
 })
 
-app.post('/users', (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
-    
-    var user = new User(body);
-    
-    user.save().then(() => {
-        return user.generateAuthToken();
-    }).then((token) => {
-        res.header('x-auth', token).send(user);
-    }).catch((err) => {
-        res.status(400).send(err);
-    });
-});
-
-app.get('/users/me', authenticate, (req, res) => {
-    res.send(req.user);
-});
-
-app.post('/users/login', (req, res) => {
-    var body = _.pick(req.body, ['email', 'password']);
-    
-    User.findByCredentials(body.email, body.password).then((user) => {
-        return user.generateAuthToken().then((token) => {
-            res.header('x-auth', token).send(user);
-        });
-    }).catch((err) => {
-        res.status(400).send();
-    });
-});
-
-app.delete('/users/me/token', authenticate, (req, res) => {
-    req.user.removeToken(req.token).then(() => {
-        res.status(200).send();
-    }, () => {
-        res.status(400).send();
-    })
-})
-
-app.listen(3000);
+module.exports = router;

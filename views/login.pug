@@ -1,0 +1,25 @@
+extends layout
+
+block content
+
+	.container
+		.jumbotron
+			h2.b.align.center Welcome to #{title}!
+			hr.my-4
+			.container
+			.row
+				.col-sm
+					- if(err) {
+						.alert.alert-danger(role="alert") #{err}
+					- } 					
+					form(method="POST", action="./login")
+						.form-group
+							label(for="email") Email
+							input#email.form-control(type="email", name="email", required, autofocus="true", placeholder="Enter Email")
+						.form-group
+							label(for="password") Password
+							input#password.form-control(type="password", name="password", required, placeholder="Password")
+							<hr>
+							button.btn.btn-primary(type="submit") Login
+				.col-sm
+				.col-sm
